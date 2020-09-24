@@ -1,0 +1,15 @@
+.login-box{
+    width: 400px;
+    margin-top: 100px;
+}
+
+.login-btn {
+    width: 400px;
+}
+
+.toggle-btn{
+    color: green;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 5px;
+}
