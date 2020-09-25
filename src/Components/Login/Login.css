@@ -23,3 +23,8 @@
     width: 100px;
     border-radius: 50%;
 }
+
+.notification {
+    text-align: center;
+    max-width: 400px;
+}

@@ -13,6 +13,8 @@ const Login = () => {
 
     const googleProvider = new firebase.auth.GoogleAuthProvider();
     const fbProvider = new firebase.auth.FacebookAuthProvider();
+    const githubProvider = new firebase.auth.GithubAuthProvider();
+    const twitterProvider = new firebase.auth.TwitterAuthProvider();
 
     // all states
     const [isNew, setIsNew] = useState(true);
@@ -23,24 +25,32 @@ const Login = () => {
         isSignedIn: false
     });
 
+    const handleSuccessLogin = (user, provider) => {
+        const newUser = {
+            name: user.displayName,
+            email: user.email,
+            img: user.photoURL,
+            isSignedIn: true
+        }
+        setSignedInUser(newUser);
+        setNotification('Logged in successfully with ' + provider);
+        setNotiDesign({color: 'green'});
+    }
+
+    const handleErrorLogin = (error) => {
+        const errorMessage = error.message;
+        setNotification(errorMessage);
+        setNotiDesign({color: 'red', textAlign: 'center'});
+    }
+
     const handleGoogleSignin = () => {
         firebase.auth().signInWithPopup(googleProvider)
         .then( (result) => {
             const user = result.user;
-            const newUser = {
-                name: user.displayName,
-                email: user.email,
-                img: user.photoURL,
-                isSignedIn: true
-            }
-            setSignedInUser(newUser);
-            setNotification('Logged in successfully with Google');
-            setNotiDesign({color: 'green', textAlign: 'center'});
-          }).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            setNotification(errorMessage);
-            setNotiDesign({color: 'red', textAlign: 'center'});
+            handleSuccessLogin(user, 'Google');
+          })
+        .catch((error) => {
+            handleErrorLogin(error);
           });
     }
 
@@ -48,28 +58,31 @@ const Login = () => {
         firebase.auth().signInWithPopup(fbProvider)
         .then((result) => {
             const user = result.user;
-            const newUser = {
-                name: user.displayName,
-                email: user.email,
-                img: user.photoURL,
-                isSignedIn: true
-            }
-            setSignedInUser(newUser);
-            setNotification('Logged in successfully with Facebook');
-            setNotiDesign({color: 'green', textAlign: 'center'});
+            handleSuccessLogin(user, 'Facebook');
           }).catch((error) => {
-            const errorMessage = error.message;
-            setNotification(errorMessage);
-            setNotiDesign({color: 'red', textAlign: 'center'});
+            handleErrorLogin(error);
           });
     }
 
     const handleTwitterSignin = () => {
-        
+        firebase.auth().signInWithPopup(twitterProvider)
+        .then( (result) => {
+            const user = result.user;
+            handleSuccessLogin(user, 'Twitter');
+          })
+        .catch((error) => {
+            handleErrorLogin(error);
+          });
     }
 
     const handleGithubSignin = () => {
-        
+        firebase.auth().signInWithPopup(githubProvider)
+        .then((result) => {
+            const user = result.user;
+            handleSuccessLogin(user, 'Github');
+          }).catch((error) => {
+            handleErrorLogin(error);
+          });
     }
 
     const handleLogOut = () => {
@@ -77,7 +90,7 @@ const Login = () => {
             isSignedIn: false
         })
         setNotification('Logged Out Successfully');
-        setNotiDesign({color: 'green', textAlign: 'center'})
+        setNotiDesign({color: 'green'})
     }
 
     return (
@@ -124,7 +137,7 @@ const Login = () => {
                     <Button onClick={handleTwitterSignin} className="login-btn" type="submit">Continue with Twitter</Button><br/><br/>
                     <Button onClick={handleGithubSignin} className="login-btn" type="submit">Continue with Github</Button><br/><br/>
                 </div>}
-                <h4 style={notiDesign}>{notification}</h4>
+                <h4 className="notification" style={notiDesign}>{notification}</h4>
             </div>
             
         </div>
